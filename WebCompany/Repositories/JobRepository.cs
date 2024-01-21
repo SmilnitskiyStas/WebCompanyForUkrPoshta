@@ -3,7 +3,6 @@ using WebCompany.Repositiories.IRepository;
 using Dapper;
 using Microsoft.Data.SqlClient;
 using System.Data;
-using System.Net;
 
 namespace WebCompany.Repositiories
 {

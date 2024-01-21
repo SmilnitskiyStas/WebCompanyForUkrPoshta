@@ -1,8 +1,116 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+    ViewBag.Companies = ViewBag.CompanyList;
+    ViewBag.Departments = ViewBag.DepartmentList;
+    ViewBag.Countries = ViewBag.CountryList;
+    ViewBag.Cities = ViewBag.CityList;
+    ViewBag.Jobs = ViewBag.JobList;
+    ViewBag.PhoneNmbs = ViewBag.PhoneNmbList;
+    ViewBag.Employees = ViewBag.EmployeeList;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+@model ModelsForEmployee;
+
+<div class="row">
+    <div class="col-sm-3">
+        <div class="col-12 text-center">
+            <span class="text-center fs-4">Filters</span>
+        </div>
+        <div class="offset-md-2 pb-2">
+            @await Html.PartialAsync("Filters/FilterCompany", Model.FilterRequest)
+        </div>
+        <div class="offset-md-2 pb-2">
+            @await Html.PartialAsync("Filters/FilterDepartment", Model.FilterRequest)
+        </div>
+        <div class="offset-md-2 pb-2">
+            @await Html.PartialAsync("Filters/FilterCountry", Model.FilterRequest)
+        </div>
+        <div class="offset-md-2 pb-2">
+            @await Html.PartialAsync("Filters/FilterCity", Model.FilterRequest)
+        </div>
+        <div class="offset-md-2 pb-2">
+            @await Html.PartialAsync("Filters/FilterJob", Model.FilterRequest)
+        </div>
+        <div class="offset-md-2 pb-2">
+            @await Html.PartialAsync("Filters/FilterEmployee", Model.FilterRequest)
+        </div>
+        <div class="offset-md-2 pb-2">
+            @await Html.PartialAsync("Filters/FilterPhoneNumber", Model.FilterRequest)
+        </div>
+    </div>
+    <div class="col-sm-9">
+        <div class="card shadow border-0 mt-4">
+            <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <h1 class="text-white">Employee List</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-4">
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                Sur Name
+                            </th>
+                            <th>
+                                First Name
+                            </th>
+                            <th>
+                                Last Name
+                            </th>
+                            <th>
+                                Birth Date
+                            </th>
+                            <th>
+                                Start work Date
+                            </th>
+                            <th>
+                                Salary in UAH
+                            </th>
+                            <th>
+
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Employees)
+                        {
+                            <tr>
+                                <td>
+                                    @item.SurName
+                                </td>
+                                <td>
+                                    @item.FirstName
+                                </td>
+                                <td>
+                                    @item.LastName
+                                </td>
+                                <td>
+                                    @item.BirthDate
+                                </td>
+                                <td>
+                                    @item.StartWorkDate
+                                </td>
+                                <td>
+                                    @((item.Salary_in_UAH).ToString("c"))  @* ToString("c") => Валюта *@
+                                </td>
+                                <td>
+                                    <a asp-action="EmployeeDelete" asp-route-couponId="@item.EmployeeId" class="btn btn-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
