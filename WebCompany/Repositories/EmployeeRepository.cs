@@ -23,7 +23,7 @@ namespace WebCompany.Repositiories
                 var sqlQuery = $"INSERT INTO Employees (SurName, FirstName, LastName, BirthDate, StartWordDate, Salary_in_UAH, CompanyId," +
                     $" EmployeePhoneId, EmployeeAddressId, EmployeeJobId) VALUES ('{employee.SurName}', '{employee.FirstName}', '{employee.LastName}'," +
                     $" '{employee.BirthDate}', '{employee.StartWorkDate}', '{employee.Salary_in_UAH}', '{employee.CompanyId}', '{employee.EmployeePhoneId}'," +
-                    $" '{employee.EmpoyeeAddressId}', '{employee.EmployeeJobId}');" +
+                    $" '{employee.EmployeeAddressId}', '{employee.EmployeeJobId}');" +
                     $" SELECT CAST (SCOPE_IDENTITY() AS int);";
 
                 return db.Query<Employee>(sqlQuery).FirstOrDefault();
@@ -95,8 +95,10 @@ namespace WebCompany.Repositiories
             using (IDbConnection db = new SqlConnection(connectionString))
             {
                 db.Execute($"UPDATE Employees SET SurName = '{employee.SurName}', FirstName = '{employee.FirstName}', LastName = '{employee.LastName}', " +
-                    $"BirthDate = '{employee.BirthDate}', StartWordDate = '{employee.StartWorkDate}', Salary_in_UAH = '{employee.Salary_in_UAH}'," +
-                    $" EmployeePhoneId = '{employee.EmployeePhoneId}', EmployeeAddressId = '{employee.EmpoyeeAddressId}', EmployeeJobId = '{employee.EmployeeJobId}'" +
+                    $"BirthDate = '{employee.BirthDate.Year}-{employee.BirthDate.Month}-{employee.BirthDate.Day}'," +
+                    $" StartWorkDate = '{employee.StartWorkDate.Year}-{employee.StartWorkDate.Month}-{employee.StartWorkDate.Day}'," +
+                    $" Salary_in_UAH = '{employee.Salary_in_UAH}'," +
+                    $" EmployeePhoneId = '{employee.EmployeePhoneId}', EmployeeAddressId = '{employee.EmployeeAddressId}', EmployeeJobId = '{employee.EmployeeJobId}'" +
                     $" WHERE EmployeeId = {employee.EmployeeId};");
 
                 return GetEmployee(employee.EmployeeId);

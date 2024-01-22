@@ -9,7 +9,7 @@
     ViewBag.Employees = ViewBag.EmployeeList;
 }
 
-@model ModelsForEmployee;
+@model ModelsForEmployeeDto;
 
 <div class="row">
     <div class="col-sm-3">
@@ -48,7 +48,6 @@
                 </div>
             </div>
             <div class="card-body p-4">
-
                 <table class="table">
                     <thead>
                         <tr>
@@ -98,8 +97,8 @@
                                     @((item.Salary_in_UAH).ToString("c"))  @* ToString("c") => Валюта *@
                                 </td>
                                 <td>
-                                    <a asp-action="EmployeeDelete" asp-route-couponId="@item.EmployeeId" class="btn btn-danger">
-                                        <i class="bi bi-trash"></i>
+                                    <a asp-action="UserInfo" asp-route-employeeId="@item.EmployeeId" class="btn btn-info">
+                                        <i class="bi bi-person-vcard"></i>
                                     </a>
                                 </td>
                             </tr>

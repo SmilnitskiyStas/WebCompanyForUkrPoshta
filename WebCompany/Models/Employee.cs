@@ -11,7 +11,7 @@
         public decimal Salary_in_UAH { get; set; }
         public int CompanyId { get; set; }
         public int EmployeePhoneId { get; set; }
-        public int EmpoyeeAddressId { get; set; }
+        public int EmployeeAddressId { get; set; }
         public int EmployeeJobId { get; set; }
     }
 }

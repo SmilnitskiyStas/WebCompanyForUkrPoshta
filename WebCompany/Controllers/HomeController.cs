@@ -37,7 +37,7 @@ namespace WebCompany.Controllers
         public IActionResult Index()
         {
             var employees = _mapper.Map<List<EmployeeDto>>(_employeeRepository.GetEmployees());
-            ModelsForEmployee modelsForEmployee = new ModelsForEmployee();
+            ModelsForEmployeeDto modelsForEmployee = new ModelsForEmployeeDto();
 
             modelsForEmployee.Employees = employees;
             modelsForEmployee.FilterRequest = new FilterRequestDto();
@@ -95,7 +95,7 @@ namespace WebCompany.Controllers
 
             var employees = _mapper.Map<List<EmployeeDto>>(_employeeRepository.GetEmployeesOfFilters(sqlQueryFilter));
 
-            ModelsForEmployee modelsForEmployee = new ModelsForEmployee();
+            ModelsForEmployeeDto modelsForEmployee = new ModelsForEmployeeDto();
 
             modelsForEmployee.Employees = employees;
             modelsForEmployee.FilterRequest = new FilterRequestDto()
@@ -120,10 +120,44 @@ namespace WebCompany.Controllers
             return View(modelsForEmployee);
         }
 
+        [HttpGet("employee-info/{employeeId:int}")]
+        public IActionResult UserInfo(int employeeId)
+        {
+            var employee = _mapper.Map<EmployeeDto>(_employeeRepository.GetEmployee(employeeId));
+
+            return View(employee);
+        }
+
+        [HttpPost]
+        public IActionResult UserEdit(EmployeeDto employee)
+        {
+            var emploeeForReplace = _employeeRepository.GetEmployee(employee.EmployeeId);
+
+            if (ModelState.IsValid)
+            {
+                if (_employeeRepository.GetEmployee(employee.EmployeeId) == null)
+                {
+                    return NotFound();
+                }
+
+                emploeeForReplace.SurName = employee.SurName;
+                emploeeForReplace.FirstName = employee.FirstName;
+                emploeeForReplace.LastName = employee.LastName;
+                emploeeForReplace.BirthDate = employee.BirthDate;
+                emploeeForReplace.StartWorkDate = employee.StartWorkDate;
+                emploeeForReplace.Salary_in_UAH = employee.Salary_in_UAH;
+
+                _employeeRepository.UpdateEmployee(emploeeForReplace);
+            }
+            return Redirect("Index");
+        }
+
         [HttpDelete("{employeeId:int}")]
         public IActionResult Delete(int employeeId)
         {
-            return View();
+            _employeeRepository.DeleteEmployee(employeeId);
+
+            return Redirect("Index");
         }
 
         public IActionResult Privacy()
