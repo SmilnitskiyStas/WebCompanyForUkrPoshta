@@ -5,6 +5,6 @@ namespace WebCompany.Repositories.IRepository
 {
     public interface IFilterEmployeeRepository
     {
-        ICollection<Employee> GetEmployees(FilterRequestDto filter);
+        ICollection<Employee> GetEmployeesOfFilters(string filters);
     }
 }

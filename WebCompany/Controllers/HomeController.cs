@@ -5,12 +5,15 @@ using System.Diagnostics;
 using WebCompany.Models;
 using WebCompany.Models.Dto;
 using WebCompany.Repositiories.IRepository;
+using WebCompany.Repositories.IRepository;
 
 namespace WebCompany.Controllers
 {
     public class HomeController : Controller
     {
         private readonly IEmployeeRepository _employeeRepository;
+        private readonly IFilterEmployeeRepository _filterEmployeeRepository;
+        private readonly IFilterSalaryRepository _filterSalaryRepository;
         private readonly IDepartmentRepository _departmentRepository;
         private readonly ICompanyRepository _companyRepository;
         private readonly ICountryRepository _countryRepository;
@@ -21,7 +24,7 @@ namespace WebCompany.Controllers
 
         public HomeController(IEmployeeRepository employeeRepository, IDepartmentRepository departmentRepository, ICompanyRepository companyRepository,
             ICountryRepository countryRepository, ICityRepository cityRepository, IJobRepository jobRepository,
-            IPhoneNmbRepository phoneNmbRepository, IMapper mapper)
+            IPhoneNmbRepository phoneNmbRepository, IMapper mapper, IFilterEmployeeRepository filterEmployeeRepository, IFilterSalaryRepository filterSalaryRepository)
         {
             _employeeRepository = employeeRepository;
             _departmentRepository = departmentRepository;
@@ -31,13 +34,15 @@ namespace WebCompany.Controllers
             _jobRepository = jobRepository;
             _phoneNmbRepository = phoneNmbRepository;
             _mapper = mapper;
+            _filterEmployeeRepository = filterEmployeeRepository;
+            _filterSalaryRepository = filterSalaryRepository;
         }
 
         [HttpGet]
         public IActionResult Index()
         {
             var employees = _mapper.Map<List<EmployeeDto>>(_employeeRepository.GetEmployees());
-            ModelsForEmployeeDto modelsForEmployee = new ModelsForEmployeeDto();
+            ModelForEmployeeDto modelsForEmployee = new ModelForEmployeeDto();
 
             modelsForEmployee.Employees = employees;
             modelsForEmployee.FilterRequest = new FilterRequestDto();
@@ -56,46 +61,9 @@ namespace WebCompany.Controllers
         [HttpPost]
         public IActionResult Index(FilterRequestDto filterRequest)
         {
-            var sqlQueryFilter = "";
+            var employees = _mapper.Map<List<EmployeeDto>>(_filterEmployeeRepository.GetEmployeesOfFilters(CreateCommandForFilterSqlQuery(filterRequest)));
 
-            if (filterRequest.CompanyName is not null)
-            {
-                sqlQueryFilter += $"AND cmp.CompanyName = '{filterRequest.CompanyName}' ";
-            }
-
-            if (filterRequest.DepartmentName is not null)
-            {
-                sqlQueryFilter += $"AND d.DepartmentName = '{filterRequest.DepartmentName}' ";
-            }
-
-            if (filterRequest.EmployeeName is not null)
-            {
-                sqlQueryFilter += $"AND (e.SurName + ' ' + e.FirstName + ' ' + e.LastName) = '{filterRequest.EmployeeName}' ";
-            }
-
-            if (filterRequest.CountryName is not null)
-            {
-                sqlQueryFilter += $"AND ct.CountryName = '{filterRequest.CountryName}' ";
-            }
-
-            if (filterRequest.CityName is not null)
-            {
-                sqlQueryFilter += $"AND cty.CityName = '{filterRequest.CityName}' ";
-            }
-
-            if (filterRequest.JobName is not null)
-            {
-                sqlQueryFilter += $"AND j.JobName = '{filterRequest.JobName}' ";
-            }
-
-            if (filterRequest.PhoneNumber is not null)
-            {
-                sqlQueryFilter += $"AND pn.PhoneNumber = '{filterRequest.PhoneNumber}' ";
-            }
-
-            var employees = _mapper.Map<List<EmployeeDto>>(_employeeRepository.GetEmployeesOfFilters(sqlQueryFilter));
-
-            ModelsForEmployeeDto modelsForEmployee = new ModelsForEmployeeDto();
+            ModelForEmployeeDto modelsForEmployee = new ModelForEmployeeDto();
 
             modelsForEmployee.Employees = employees;
             modelsForEmployee.FilterRequest = new FilterRequestDto()
@@ -152,12 +120,58 @@ namespace WebCompany.Controllers
             return Redirect("Index");
         }
 
-        [HttpDelete("{employeeId:int}")]
+        [HttpDelete("employee-delete/{employeeId:int}")]
         public IActionResult Delete(int employeeId)
         {
             _employeeRepository.DeleteEmployee(employeeId);
 
             return Redirect("Index");
+        }
+
+        [HttpGet]
+        public IActionResult SalaryReport()
+        {
+            ModelForSalaryDto modelForSalary = new ModelForSalaryDto();
+            var amountSalaries = _filterSalaryRepository.GetTotalSalary("");
+
+            modelForSalary.Salaries = amountSalaries;
+            modelForSalary.FilterRequest = new FilterRequestDto();
+
+            ViewBag.CompanyList = CreateCompanyList();
+            ViewBag.DepartmentList = CreateDepartmentList();
+            ViewBag.CountryList = CreateCountryList();
+            ViewBag.CityList = CreateCityList();
+            ViewBag.JobList = CreateJobList();
+            ViewBag.PhoneNmbList = CreatePhoneNumberList();
+            ViewBag.EmployeeList = CreateEmployeeList();
+
+            return View(modelForSalary);
+        }
+
+        [HttpPost]
+        public IActionResult SalaryReport(FilterRequestDto filterRequest)
+        {
+            ModelForSalaryDto modelForSalary = new ModelForSalaryDto();
+
+            modelForSalary.Salaries = _filterSalaryRepository.GetTotalSalary(CreateCommandForFilterSqlQuery(filterRequest));
+            modelForSalary.FilterRequest = new FilterRequestDto()
+            {
+                CompanyName = filterRequest.CompanyName,
+                DepartmentName = filterRequest.DepartmentName,
+                CountryName = filterRequest.CountryName,
+                CityName = filterRequest.CityName,
+                JobName = filterRequest.JobName
+            };
+
+            ViewBag.CompanyList = CreateCompanyList();
+            ViewBag.DepartmentList = CreateDepartmentList();
+            ViewBag.CountryList = CreateCountryList();
+            ViewBag.CityList = CreateCityList();
+            ViewBag.JobList = CreateJobList();
+            ViewBag.PhoneNmbList = CreatePhoneNumberList();
+            ViewBag.EmployeeList = CreateEmployeeList();
+
+            return View(modelForSalary);
         }
 
         public IActionResult Privacy()
@@ -169,6 +183,48 @@ namespace WebCompany.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        private string CreateCommandForFilterSqlQuery(FilterRequestDto filterRequest)
+        {
+            var sqlQueryFilter = "";
+
+            if (filterRequest.CompanyName is not null)
+            {
+                sqlQueryFilter += $"AND cmp.CompanyName = '{filterRequest.CompanyName}' ";
+            }
+
+            if (filterRequest.DepartmentName is not null)
+            {
+                sqlQueryFilter += $"AND d.DepartmentName = '{filterRequest.DepartmentName}' ";
+            }
+
+            if (filterRequest.EmployeeName is not null)
+            {
+                sqlQueryFilter += $"AND (e.SurName + ' ' + e.FirstName + ' ' + e.LastName) = '{filterRequest.EmployeeName}' ";
+            }
+
+            if (filterRequest.CountryName is not null)
+            {
+                sqlQueryFilter += $"AND ct.CountryName = '{filterRequest.CountryName}' ";
+            }
+
+            if (filterRequest.CityName is not null)
+            {
+                sqlQueryFilter += $"AND cty.CityName = '{filterRequest.CityName}' ";
+            }
+
+            if (filterRequest.JobName is not null)
+            {
+                sqlQueryFilter += $"AND j.JobName = '{filterRequest.JobName}' ";
+            }
+
+            if (filterRequest.PhoneNumber is not null)
+            {
+                sqlQueryFilter += $"AND pn.PhoneNumber = '{filterRequest.PhoneNumber}' ";
+            }
+
+            return sqlQueryFilter;
         }
 
         private List<SelectListItem> CreateCompanyList()

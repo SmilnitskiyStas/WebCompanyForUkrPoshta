@@ -1,8 +1,8 @@
 ﻿namespace WebCompany.Models.Dto
 {
-    public class ModelsForEmployeeDto
+    public class ModelForSalaryDto
     {
-        public List<EmployeeDto> Employees { get; set; }
+        public ICollection<FilterSalaryDto> Salaries { get; set; }
         public FilterRequestDto FilterRequest { get; set; }
     }
 }

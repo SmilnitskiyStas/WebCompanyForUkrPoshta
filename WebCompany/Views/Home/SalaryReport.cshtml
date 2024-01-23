@@ -1,0 +1,81 @@
+﻿@{
+    ViewData["Title"] = "Salary Report";
+    ViewBag.Companies = ViewBag.CompanyList;
+    ViewBag.Departments = ViewBag.DepartmentList;
+    ViewBag.Countries = ViewBag.CountryList;
+    ViewBag.Cities = ViewBag.CityList;
+    ViewBag.Jobs = ViewBag.JobList;
+}
+
+@model ModelForSalaryDto;
+
+<div class="row">
+    <div class="col-sm-3">
+        <div class="col-12 text-center">
+            <span class="text-center fs-4">Filters</span>
+        </div>
+        <div class="offset-md-2 pb-2">
+            @await Html.PartialAsync("Filters/FilterCompany", Model.FilterRequest)
+        </div>
+        <div class="offset-md-2 pb-2">
+            @await Html.PartialAsync("Filters/FilterDepartment", Model.FilterRequest)
+        </div>
+        <div class="offset-md-2 pb-2">
+            @await Html.PartialAsync("Filters/FilterCountry", Model.FilterRequest)
+        </div>
+        <div class="offset-md-2 pb-2">
+            @await Html.PartialAsync("Filters/FilterCity", Model.FilterRequest)
+        </div>
+        <div class="offset-md-2 pb-2">
+            @await Html.PartialAsync("Filters/FilterJob", Model.FilterRequest)
+        </div>
+    </div>
+    <div class="col-sm-9">
+        <div class="card shadow border-0 mt-4">
+            <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <h1 class="text-white">Amount Salary</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th hidden>
+                                Id
+                            </th>
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                Salary in UAH
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Salaries)
+                        {
+                            <tr>
+                                <td hidden>
+                                    @item.FilterSalaryId
+                                </td>
+                                <td>
+                                    @item.FilterSalaryName
+                                </td>
+                                <td>
+                                    @((item.TotalAmountSalary).ToString("c"))  @* ToString("c") => Валюта *@
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

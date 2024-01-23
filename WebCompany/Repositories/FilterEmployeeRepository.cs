@@ -10,41 +10,40 @@ namespace WebCompany.Repositories
 {
     public class FilterEmployeeRepository : IFilterEmployeeRepository
     {
-        private readonly IConfiguration _configuration;
-        private readonly IEmployeeRepository _employeeRepository;
-        private readonly IDepartmentRepository _departmentRepository;
-        private readonly ICountryRepository _countryRepository;
-        private readonly ICityRepository _cityRepository;
-        private readonly IJobRepository _jobRepository;
-        private readonly IPhoneNmbRepository _phoneNmbRepository;
+        private readonly string connectionString;
 
-        public FilterEmployeeRepository(IEmployeeRepository employeeRepository, IDepartmentRepository departmentRepository,
-            ICountryRepository countryRepository, ICityRepository cityRepository,
-            IJobRepository jobRepository, IPhoneNmbRepository phoneNmbRepository, IConfiguration configuration)
+        public FilterEmployeeRepository(string connectionString)
         {
-            _employeeRepository = employeeRepository;
-            _departmentRepository = departmentRepository;
-            _countryRepository = countryRepository;
-            _cityRepository = cityRepository;
-            _jobRepository = jobRepository;
-            _phoneNmbRepository = phoneNmbRepository;
-            _configuration = configuration;
+            this.connectionString = connectionString;
         }
 
-        public ICollection<Employee> GetEmployees(FilterRequestDto filter)
+        public ICollection<Employee> GetEmployeesOfFilters(string filters)
         {
-            var department = _departmentRepository.GetDepartment(filter.DepartmentName);
-            var country = _countryRepository.GetCountry(filter.CountryName);
-            var city = _cityRepository.GetCity(filter.CityName);
-            var job = _jobRepository.GetJob(filter.JobName);
-            var phoneNmb = _phoneNmbRepository.GetPhone(filter.PhoneNumber);
-
-            using (IDbConnection db = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            using (IDbConnection db = new SqlConnection(connectionString))
             {
-                var sqlQuery = "";
-            }
+                var sqlQuery = $"SELECT " +
+                $"e.EmployeeId" +
+                $", e.SurName" +
+                $", e.FirstName" +
+                $", e.LastName" +
+                $", e.BirthDate" +
+                $", e.StartWorkDate" +
+                $", e.Salary_in_UAH " +
+                $"FROM Employees AS e " +
+                $"LEFT JOIN PhoneNumbers AS pn ON e.EmployeePhoneId = pn.PhoneId " +
+                $"LEFT JOIN Jobs AS j ON e.EmployeeJobId = j.Jobid " +
+                $"LEFT JOIN Departments AS d ON j.DepartmentId = d.DepartmentId " +
+                $"LEFT JOIN Companies AS cmp ON e.CompanyId = cmp.CompanyId " +
+                $"LEFT JOIN Addresses AS a ON e.EmployeeAddressId = a.AddressId " +
+                $"LEFT JOIN Cities AS cty ON a.CityId = cty.CityId " +
+                $"LEFT JOIN Countries AS ct ON a.CountryId = ct.CountryId " +
+                $"WHERE 1=1 " +
+                $"{filters}";
 
-            return null;
+                var emp = db.Query<Employee>(sqlQuery).ToList();
+
+                return emp;
+            }
         }
     }
 }

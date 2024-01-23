@@ -24,7 +24,8 @@ namespace WebCompany
             builder.Services.AddTransient<IEmployeeRepository, EmployeeRepository>(provider => new EmployeeRepository(connectionString));
             builder.Services.AddTransient<IJobRepository, JobRepository>(provider => new JobRepository(connectionString));
             builder.Services.AddTransient<IPhoneNmbRepository, PhoneNmbRepository>(provider => new PhoneNmbRepository(connectionString));
-            builder.Services.AddTransient<IFilterEmployeeRepository, FilterEmployeeRepository>();
+            builder.Services.AddTransient<IFilterEmployeeRepository, FilterEmployeeRepository>(provider => new FilterEmployeeRepository(connectionString));
+            builder.Services.AddTransient<IFilterSalaryRepository, FilterSalaryRepository>(provider => new FilterSalaryRepository(connectionString));
 
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             var app = builder.Build();
