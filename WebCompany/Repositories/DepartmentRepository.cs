@@ -9,16 +9,16 @@ namespace WebCompany.Repositiories
 {
     public class DepartmentRepository : IDepartmentRepository
     {
-        private readonly string connectionString;
+        private readonly string _connectionString;
 
         public DepartmentRepository(string connectionString)
         {
-            this.connectionString = connectionString;
+            _connectionString = connectionString;
         }
 
         public Department CreateDepartment(Department department)
         {
-            using (IDbConnection db = new SqlConnection(connectionString))
+            using (IDbConnection db = new SqlConnection(_connectionString))
             {
                 var sqlQuery = $"INSERT INTO Departments (DepartmentName, CompanyId) VALUES ('{department.DepartmentName}', '{department.CompanyId}');" +
                     $" SELECT CAST (SCOPE_IDENTITY() AS int);";
@@ -29,7 +29,7 @@ namespace WebCompany.Repositiories
 
         public bool DeleteDepartment(int id)
         {
-            using (IDbConnection db = new SqlConnection(connectionString))
+            using (IDbConnection db = new SqlConnection(_connectionString))
             {
                 var sqlQuery = $"DELETE FROM Departments WHERE DepartmentId = {id}; SELECT CAST (SCOPE_IDENTITY() AS int);";
 
@@ -39,7 +39,7 @@ namespace WebCompany.Repositiories
 
         public Department GetDepartment(int id)
         {
-            using (IDbConnection db = new SqlConnection(connectionString))
+            using (IDbConnection db = new SqlConnection(_connectionString))
             {
                 return db.Query<Department>($"SELECT * FROM Departments WHERE DepartmentId = {id}").FirstOrDefault();
             }
@@ -47,7 +47,7 @@ namespace WebCompany.Repositiories
 
         public Department GetDepartment(string name)
         {
-            using (IDbConnection db = new SqlConnection(connectionString))
+            using (IDbConnection db = new SqlConnection(_connectionString))
             {
                 return db.Query<Department>($"SELECT * FROM Departments WHERE DepartmentName = '{name}'").FirstOrDefault();
             }
@@ -55,7 +55,7 @@ namespace WebCompany.Repositiories
 
         public ICollection<Department> GetDepartments()
         {
-            using (IDbConnection db = new SqlConnection(connectionString))
+            using (IDbConnection db = new SqlConnection(_connectionString))
             {
                 return db.Query<Department>($"SELECT * FROM Departments").ToList();
             }
@@ -63,7 +63,7 @@ namespace WebCompany.Repositiories
 
         public Department UpdateDepartment(Department department)
         {
-            using (IDbConnection db = new SqlConnection(connectionString))
+            using (IDbConnection db = new SqlConnection(_connectionString))
             {
                 db.Execute($"UPDATE Departments SET DepartmentName = '{department.DepartmentName}', CompanyId = '{department.CompanyId}' WHERE DepartmentId = {department.DepartmentId};");
 

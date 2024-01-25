@@ -8,16 +8,16 @@ namespace WebCompany.Repositiories
 {
     public class CountryRepository : ICountryRepository
     {
-        private readonly string connectionString;
+        private readonly string _connectionString;
 
         public CountryRepository(string connectionString)
         {
-            this.connectionString = connectionString;
+            _connectionString = connectionString;
         }
 
         public Country CreateCountry(Country country)
         {
-            using (IDbConnection db = new SqlConnection(connectionString))
+            using (IDbConnection db = new SqlConnection(_connectionString))
             {
                 var sqlQuery = $"INSERT INTO Countries (CountryName) VALUES ('{country.CountryName}'); SELECT CAST (SCOPE_IDENTITY() AS int);";
 
@@ -27,7 +27,7 @@ namespace WebCompany.Repositiories
 
         public bool DeleteCountry(int id)
         {
-            using (IDbConnection db = new SqlConnection(connectionString))
+            using (IDbConnection db = new SqlConnection(_connectionString))
             {
                 var sqlQuery = $"DELETE FROM Countries WHERE CountryId = {id}; SELECT CAST (SCOPE_IDENTITY() AS int);";
 
@@ -37,7 +37,7 @@ namespace WebCompany.Repositiories
 
         public ICollection<Country> GetCountries()
         {
-            using (IDbConnection db = new SqlConnection(connectionString))
+            using (IDbConnection db = new SqlConnection(_connectionString))
             {
                 return db.Query<Country>($"SELECT * FROM Countries").ToList();
             }
@@ -45,7 +45,7 @@ namespace WebCompany.Repositiories
 
         public Country GetCountry(int id)
         {
-            using (IDbConnection db = new SqlConnection(connectionString))
+            using (IDbConnection db = new SqlConnection(_connectionString))
             {
                 return db.Query<Country>($"SELECT * FROM Countries WHERE CountryId = {id}").FirstOrDefault();
             }
@@ -53,7 +53,7 @@ namespace WebCompany.Repositiories
 
         public Country GetCountry(string countryName)
         {
-            using (IDbConnection db = new SqlConnection(connectionString))
+            using (IDbConnection db = new SqlConnection(_connectionString))
             {
                 return db.Query<Country>($"SELECT * FROM Countries WHERE CountryName = '{countryName}'").FirstOrDefault();
             }
@@ -61,7 +61,7 @@ namespace WebCompany.Repositiories
 
         public Country UpdateCountry(Country country)
         {
-            using (IDbConnection db = new SqlConnection(connectionString))
+            using (IDbConnection db = new SqlConnection(_connectionString))
             {
                 db.Execute($"UPDATE Countries SET CountryName = '{country.CountryName}' WHERE CountryId = {country.CountryId};");
 

@@ -9,16 +9,16 @@ namespace WebCompany.Repositiories
 {
     public class EmployeeRepository : IEmployeeRepository
     {
-        private readonly string connectionString;
+        private readonly string _connectionString;
 
         public EmployeeRepository(string connectionString)
         {
-            this.connectionString = connectionString;
+            _connectionString = connectionString;
         }
 
         public Employee CreateEmployee(Employee employee)
         {
-            using (IDbConnection db = new SqlConnection(connectionString))
+            using (IDbConnection db = new SqlConnection(_connectionString))
             {
                 var sqlQuery = $"INSERT INTO Employees (SurName, FirstName, LastName, BirthDate, StartWordDate, Salary_in_UAH, CompanyId," +
                     $" EmployeePhoneId, EmployeeAddressId, EmployeeJobId) VALUES ('{employee.SurName}', '{employee.FirstName}', '{employee.LastName}'," +
@@ -32,7 +32,7 @@ namespace WebCompany.Repositiories
 
         public bool DeleteEmployee(int id)
         {
-            using (IDbConnection db = new SqlConnection(connectionString))
+            using (IDbConnection db = new SqlConnection(_connectionString))
             {
                 var sqlQuery = $"DELETE FROM Employees WHERE EmployeeId = {id}; SELECT CAST (SCOPE_IDENTITY() AS int);";
 
@@ -42,7 +42,7 @@ namespace WebCompany.Repositiories
 
         public Employee GetEmployee(int id)
         {
-            using (IDbConnection db = new SqlConnection(connectionString))
+            using (IDbConnection db = new SqlConnection(_connectionString))
             {
                 return db.Query<Employee>($"SELECT * FROM Employees WHERE EmployeeId = {id}").FirstOrDefault();
             }
@@ -50,7 +50,7 @@ namespace WebCompany.Repositiories
 
         public Employee GetEmployee(string employeeName)
         {
-            using (IDbConnection db = new SqlConnection(connectionString))
+            using (IDbConnection db = new SqlConnection(_connectionString))
             {
                 return db.Query<Employee>($"SELECT * FROM Employees WHERE EmployeeName = '{employeeName}'").FirstOrDefault();
             }
@@ -58,7 +58,7 @@ namespace WebCompany.Repositiories
 
         public ICollection<Employee> GetEmployees()
         {
-            using (IDbConnection db = new SqlConnection(connectionString))
+            using (IDbConnection db = new SqlConnection(_connectionString))
             {
                 return db.Query<Employee>($"SELECT * FROM Employees").ToList();
             }
@@ -66,7 +66,7 @@ namespace WebCompany.Repositiories
 
         public Employee UpdateEmployee(Employee employee)
         {
-            using (IDbConnection db = new SqlConnection(connectionString))
+            using (IDbConnection db = new SqlConnection(_connectionString))
             {
                 db.Execute($"UPDATE Employees SET SurName = '{employee.SurName}', FirstName = '{employee.FirstName}', LastName = '{employee.LastName}', " +
                     $"BirthDate = '{employee.BirthDate.Year}-{employee.BirthDate.Month}-{employee.BirthDate.Day}'," +

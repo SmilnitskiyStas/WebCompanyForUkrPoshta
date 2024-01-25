@@ -10,16 +10,16 @@ namespace WebCompany.Repositories
 {
     public class FilterEmployeeRepository : IFilterEmployeeRepository
     {
-        private readonly string connectionString;
+        private readonly string _connectionString;
 
         public FilterEmployeeRepository(string connectionString)
         {
-            this.connectionString = connectionString;
+            _connectionString = connectionString;
         }
 
         public ICollection<Employee> GetEmployeesOfFilters(string filters)
         {
-            using (IDbConnection db = new SqlConnection(connectionString))
+            using (IDbConnection db = new SqlConnection(_connectionString))
             {
                 var sqlQuery = $"SELECT " +
                 $"e.EmployeeId" +

@@ -8,16 +8,16 @@ namespace WebCompany.Repositories
 {
     public class FilterSalaryRepository : IFilterSalaryRepository
     {
-        private readonly string connectionString;
+        private readonly string _connectionString;
 
         public FilterSalaryRepository(string connectionString)
         {
-            this.connectionString = connectionString;
+            _connectionString = connectionString;
         }
 
         public ICollection<FilterSalaryDto> GetTotalSalary(string filters)
         {
-            using (IDbConnection db =  new SqlConnection(connectionString)) 
+            using (IDbConnection db =  new SqlConnection(_connectionString)) 
             {
                 var sqlQuery = $"SELECT " +
                         $"d.DepartmentId AS FilterSalaryId" +

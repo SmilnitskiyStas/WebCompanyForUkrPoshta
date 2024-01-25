@@ -8,16 +8,16 @@ namespace WebCompany.Repositiories
 {
     public class CompanyRepository : ICompanyRepository
     {
-        private readonly string connectionString;
+        private readonly string _connectionString;
 
         public CompanyRepository(string connectionString)
         {
-            this.connectionString = connectionString;
+            _connectionString = connectionString;
         }
 
         public Company CreateCompany(Company company)
         {
-            using (IDbConnection db = new SqlConnection(connectionString))
+            using (IDbConnection db = new SqlConnection(_connectionString))
             {
                 var sqlQuery = $"INSERT INTO Companies (CompanyName, CompanyNumberId, CompanyAddressId) VALUES ('{company.CompanyName}'," +
                     $" '{company.CompanyNumberId}', '{company.CompanyAddressId}'); SELECT CAST (SCOPE_IDENTITY() AS int);";
@@ -28,7 +28,7 @@ namespace WebCompany.Repositiories
 
         public bool DeleteCompany(int id)
         {
-            using (IDbConnection db = new SqlConnection(connectionString))
+            using (IDbConnection db = new SqlConnection(_connectionString))
             {
                 var sqlQuery = $"DELETE FROM Companies WHERE CompanyId = {id}; SELECT CAST (SCOPE_IDENTITY() AS int);";
 
@@ -38,7 +38,7 @@ namespace WebCompany.Repositiories
 
         public ICollection<Company> GetCompanies()
         {
-            using (IDbConnection db = new SqlConnection(connectionString))
+            using (IDbConnection db = new SqlConnection(_connectionString))
             {
                 return db.Query<Company>($"SELECT * FROM Companies").ToList();
             }
@@ -46,7 +46,7 @@ namespace WebCompany.Repositiories
 
         public Company GetCompany(int id)
         {
-            using (IDbConnection db = new SqlConnection(connectionString))
+            using (IDbConnection db = new SqlConnection(_connectionString))
             {
                 return db.Query<Company>($"SELECT * FROM Companies WHERE CompanyId = {id}").FirstOrDefault();
             }
@@ -54,7 +54,7 @@ namespace WebCompany.Repositiories
 
         public Company GetCompany(string name)
         {
-            using (IDbConnection db = new SqlConnection(connectionString))
+            using (IDbConnection db = new SqlConnection(_connectionString))
             {
                 return db.Query<Company>($"SELECT * FROM Companies WHERE CompanyName = '{name}'").FirstOrDefault();
             }
@@ -62,7 +62,7 @@ namespace WebCompany.Repositiories
 
         public Company UpdateCompany(Company company)
         {
-            using (IDbConnection db = new SqlConnection(connectionString))
+            using (IDbConnection db = new SqlConnection(_connectionString))
             {
                 db.Execute($"UPDATE Companies SET CompanyName = '{company.CompanyName}', CompanyNumberId = '{company.CompanyNumberId}'," +
                     $" CompanyAddressId = '{company.CompanyAddressId}' WHERE CompanyId = {company.CompanyId};");
