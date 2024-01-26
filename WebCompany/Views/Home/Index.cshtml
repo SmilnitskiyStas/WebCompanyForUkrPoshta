@@ -1,0 +1,117 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+    ViewBag.Companies = ViewBag.CompanyList;
+    ViewBag.Departments = ViewBag.DepartmentList;
+    ViewBag.Countries = ViewBag.CountryList;
+    ViewBag.Cities = ViewBag.CityList;
+    ViewBag.Jobs = ViewBag.JobList;
+    ViewBag.PhoneNmbs = ViewBag.PhoneNmbList;
+    ViewBag.Employees = ViewBag.EmployeeList;
+}
+
+@model ModelForEmployeeDto;
+
+<div class="row">
+    <div class="col-sm-3">
+        <div class="col-12 text-center">
+            <span class="text-center fs-4">Filters</span>
+        </div>
+        <div class="offset-md-2 pb-2">
+            @await Html.PartialAsync("Filters/FilterCompany", Model.FilterRequest)
+        </div>
+        <div class="offset-md-2 pb-2">
+            @await Html.PartialAsync("Filters/FilterDepartment", Model.FilterRequest)
+        </div>
+        <div class="offset-md-2 pb-2">
+            @await Html.PartialAsync("Filters/FilterCountry", Model.FilterRequest)
+        </div>
+        <div class="offset-md-2 pb-2">
+            @await Html.PartialAsync("Filters/FilterCity", Model.FilterRequest)
+        </div>
+        <div class="offset-md-2 pb-2">
+            @await Html.PartialAsync("Filters/FilterJob", Model.FilterRequest)
+        </div>
+        <div class="offset-md-2 pb-2">
+            @await Html.PartialAsync("Filters/FilterEmployee", Model.FilterRequest)
+        </div>
+        <div class="offset-md-2 pb-2">
+            @await Html.PartialAsync("Filters/FilterPhoneNumber", Model.FilterRequest)
+        </div>
+    </div>
+    <div class="col-sm-9">
+        <div class="card shadow border-0 mt-4">
+            <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <h1 class="text-white">Employee List</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                Sur Name
+                            </th>
+                            <th>
+                                First Name
+                            </th>
+                            <th>
+                                Last Name
+                            </th>
+                            <th>
+                                Birth Date
+                            </th>
+                            <th>
+                                Start work Date
+                            </th>
+                            <th>
+                                Salary in UAH
+                            </th>
+                            <th>
+
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Employees)
+                        {
+                            <tr>
+                                <td>
+                                    @item.SurName
+                                </td>
+                                <td>
+                                    @item.FirstName
+                                </td>
+                                <td>
+                                    @item.LastName
+                                </td>
+                                <td>
+                                    @item.BirthDate
+                                </td>
+                                <td>
+                                    @item.StartWorkDate
+                                </td>
+                                <td>
+                                    @((item.Salary_in_UAH).ToString("c"))  @* ToString("c") => Валюта *@
+                                </td>
+                                <td>
+                                    <a asp-action="UserInfo" asp-route-employeeId="@item.EmployeeId" class="btn btn-info">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="16" fill="currentColor" class="bi bi-person-vcard-fill" viewBox="0 0 16 16">
+                                            <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm9 1.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 0-1h-4a.5.5 0 0 0-.5.5M9 8a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 0-1h-4A.5.5 0 0 0 9 8m1 2.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 0-1h-3a.5.5 0 0 0-.5.5m-1 2C9 10.567 7.21 9 5 9c-2.086 0-3.8 1.398-3.984 3.181A1 1 0 0 0 2 13h6.96q.04-.245.04-.5M7 6a2 2 0 1 0-4 0 2 2 0 0 0 4 0" />
+                                        </svg>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

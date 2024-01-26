@@ -1,0 +1,15 @@
+﻿@model FilterRequestDto;
+
+<form method="post" asp-action="SaveInFile">
+    <div>
+        <div hidden>
+            <input asp-for="DepartmentName" value="@Model.DepartmentName" />
+            <input asp-for="CountryName" value="@Model.CountryName" />
+            <input asp-for="CityName" value="@Model.CityName" />
+            <input asp-for="PhoneNumber" value="@Model.PhoneNumber" />
+            <input asp-for="JobName" value="@Model.JobName" />
+            <input asp-for="CompanyName" value="@Model.CompanyName" />
+        </div>
+        <button type="submit" class="form-control btn btn-success" value="Submit">Save in file</button>
+    </div>
+</form>

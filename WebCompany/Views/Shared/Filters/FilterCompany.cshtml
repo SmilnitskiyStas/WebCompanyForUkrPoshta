@@ -1,0 +1,31 @@
+﻿@model FilterRequestDto;
+
+<div class="col-12">
+    <form method="post">
+        <div class="row">
+            <div hidden>
+                <input asp-for="DepartmentName" value="@Model.DepartmentName" />
+                <input asp-for="CountryName" value="@Model.CountryName" />
+                <input asp-for="CityName" value="@Model.CityName" />
+                <input asp-for="PhoneNumber" value="@Model.PhoneNumber" />
+                <input asp-for="JobName" value="@Model.JobName" />
+                <input asp-for="EmployeeName" value="@Model.EmployeeName" />
+            </div>
+            <div class="col-sm-7">
+                <select asp-for="CompanyName" class="form-select" asp-items="@ViewBag.Companies">
+                    @if (Model.CompanyName is null)
+                    {
+                        <option disabled selected>---Select Company---</option>
+                    }
+                    else
+                    {
+                        <option disabled selected>@Model.CompanyName</option>
+                    }
+                </select>
+            </div>
+            <div class="col-sm-5">
+                <button type="submit" class="form-control btn btn-success" value="Submit">Add Filters</button>
+            </div>
+        </div>
+    </form>
+</div>
